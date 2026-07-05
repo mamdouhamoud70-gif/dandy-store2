@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم داندي</title>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FDF6F3; --cream-2:#F7EAE6; --pink:#E8B4BC; --pink-soft:#F2D2D8;
+    --burgundy:#8B3A4A; --burgundy-dark:#5E2431; --gold:#C9A876; --ink:#2B2024; --white:#fff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif;}
+  body{background:var(--cream-2);color:var(--ink);min-height:100vh;}
+  .display{font-family:'Aref Ruqaa',serif;}
+
+  /* ==== Login ==== */
+  .login-wrap{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 30% 20%, rgba(232,180,188,.4), transparent 60%), var(--cream);
+  }
+  .login-box{
+    background:#fff;padding:50px 40px;border-radius:28px;box-shadow:0 30px 80px rgba(139,58,74,.18);
+    width:100%;max-width:380px;text-align:center;
+  }
+  .login-box .drop{width:20px;height:26px;background:var(--gold);border-radius:0 100% 100% 100%;transform:rotate(45deg);margin:0 auto 18px;}
+  .login-box h1{font-size:30px;color:var(--burgundy-dark);margin-bottom:6px;}
+  .login-box p{font-size:14px;color:#8a7880;margin-bottom:30px;}
+  .login-box input{
+    width:100%;padding:14px 16px;border-radius:14px;border:1px solid #eee0e0;
+    background:var(--cream);font-size:15px;margin-bottom:16px;outline:none;
+  }
+  .login-box input:focus{border-color:var(--pink);}
+  .login-box button{
+    width:100%;padding:14px;border-radius:14px;border:none;background:var(--burgundy);
+    color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:.25s;
+  }
+  .login-box button:hover{background:var(--burgundy-dark);}
+  .login-err{color:#b23a4e;font-size:13px;margin-top:10px;display:none;}
+
+  /* ==== Admin shell ==== */
+  #adminApp{display:none;}
+  .topbar{
+    background:#fff;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;
+    border-bottom:1px solid #f0e2e2;position:sticky;top:0;z-index:10;
+  }
+  .topbar .brand{display:flex;align-items:center;gap:10px;font-size:22px;color:var(--burgundy-dark);}
+  .topbar .brand .drop{width:14px;height:18px;background:var(--gold);border-radius:0 100% 100% 100%;transform:rotate(45deg);}
+  .topbar a{color:var(--burgundy);text-decoration:none;font-size:14px;font-weight:700;}
+  .logout-btn{background:none;border:1px solid var(--burgundy);color:var(--burgundy);padding:8px 20px;border-radius:100px;cursor:pointer;font-weight:700;font-size:13.5px;}
+  .logout-btn:hover{background:var(--burgundy);color:#fff;}
+
+  .tabs{display:flex;gap:6px;padding:20px 5% 0;flex-wrap:wrap;}
+  .tab-btn{
+    padding:12px 26px;border-radius:100px;border:none;background:#fff;color:var(--burgundy-dark);
+    font-weight:700;font-size:14px;cursor:pointer;transition:.25s;box-shadow:0 3px 12px rgba(139,58,74,.06);
+  }
+  .tab-btn.active{background:var(--burgundy);color:#fff;}
+
+  .panel{padding:30px 5% 80px;max-width:1100px;margin:0 auto;}
+  .panel-section{display:none;}
+  .panel-section.active{display:block;}
+
+  .card-box{background:#fff;border-radius:22px;padding:28px;box-shadow:0 10px 40px rgba(139,58,74,.08);margin-bottom:24px;}
+  .card-box h3{color:var(--burgundy-dark);font-size:20px;margin-bottom:20px;}
+
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .form-row.full{grid-template-columns:1fr;}
+  label{display:block;font-size:13px;color:#8a7880;margin-bottom:6px;font-weight:700;}
+  input[type=text], input[type=number], textarea, select{
+    width:100%;padding:12px 14px;border-radius:12px;border:1px solid #f0e2e2;
+    background:var(--cream);font-size:14.5px;outline:none;font-family:'Tajawal',sans-serif;
+  }
+  input:focus, textarea:focus, select:focus{border-color:var(--pink);}
+  textarea{resize:vertical;min-height:70px;}
+
+  .checkbox-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .checkbox-row input{width:auto;}
+
+  .img-upload{
+    border:2px dashed #eccfd3;border-radius:16px;padding:20px;text-align:center;
+    cursor:pointer;background:var(--cream);transition:.25s;position:relative;
+  }
+  .img-upload:hover{border-color:var(--pink);}
+  .img-upload img{max-width:100%;max-height:140px;border-radius:12px;margin-top:10px;}
+  .img-upload input{display:none;}
+  .img-upload .placeholder{color:#a68d94;font-size:13.5px;}
+
+  .btn{
+    padding:13px 30px;border-radius:100px;border:none;font-weight:700;font-size:14.5px;
+    cursor:pointer;transition:.25s;
+  }
+  .btn-primary{background:var(--burgundy);color:#fff;}
+  .btn-primary:hover{background:var(--burgundy-dark);}
+  .btn-ghost{background:#f7eaea;color:var(--burgundy);}
+  .btn-ghost:hover{background:#f0dcdc;}
+  .btn-danger{background:#fdecee;color:#b23a4e;}
+  .btn-danger:hover{background:#fadde1;}
+
+  table{width:100%;border-collapse:collapse;}
+  th, td{text-align:right;padding:12px 10px;font-size:14px;border-bottom:1px solid #f5e8e8;}
+  th{color:#8a7880;font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;}
+  td img{width:44px;height:44px;object-fit:cover;border-radius:10px;background:var(--cream);}
+  .row-actions{display:flex;gap:8px;}
+  .icon-mini{background:none;border:none;cursor:pointer;font-size:16px;padding:6px;border-radius:8px;}
+  .icon-mini:hover{background:#f7eaea;}
+  .badge-mini{background:var(--gold);color:#fff;font-size:11px;padding:3px 10px;border-radius:100px;font-weight:700;}
+
+  .toast{
+    position:fixed;bottom:26px;left:26px;background:var(--burgundy-dark);color:#fff;
+    padding:14px 24px;border-radius:12px;font-size:14px;z-index:400;
+    transform:translateY(120px);opacity:0;transition:.35s;
+  }
+  .toast.show{transform:translateY(0);opacity:1;}
+  .empty-state{text-align:center;padding:40px;color:#a68d94;font-size:14px;}
+
+  /* ==== Sections list ==== */
+  .section-row{
+    display:flex;align-items:center;gap:14px;background:var(--cream);
+    border-radius:16px;padding:14px 16px;margin-bottom:12px;
+  }
+  .section-row .thumb{
+    width:50px;height:50px;border-radius:10px;object-fit:cover;background:#eee;
+    display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  }
+  .section-row .info{flex:1;min-width:0;}
+  .section-row .info h5{font-size:14.5px;color:var(--ink);}
+  .section-row .info span{font-size:12px;color:#a68d94;}
+  .section-row .order-buttons{display:flex;flex-direction:column;gap:2px;}
+  .section-row .order-buttons button{
+    background:none;border:1px solid #e8d5d5;border-radius:6px;width:24px;height:22px;
+    cursor:pointer;font-size:11px;color:var(--burgundy);
+  }
+  @media (max-width:700px){ .form-row{grid-template-columns:1fr;} table{font-size:12px;} }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="drop"></div>
+    <h1 class="display">لوحة تحكم داندي</h1>
+    <p>سجّلي دخولك عشان تديري المنتجات والمتجر</p>
+    <input type="text" id="loginPass" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-primary" style="width:100%;padding:14px;border-radius:14px;" onclick="doLogin()">دخول</button>
+    <div class="login-err" id="loginErr">كلمة المرور غلط، حاولي تاني.</div>
+  </div>
+</div>
+
+<!-- ===== ADMIN APP ===== -->
+<div id="adminApp">
+  <div class="topbar">
+    <div class="brand display"><div class="drop"></div> داندي — لوحة التحكم</div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="index.html" target="_blank">👁️ عرض المتجر</a>
+      <button class="logout-btn" onclick="doLogout()">تسجيل خروج</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="products" onclick="switchTab('products')">المنتجات</button>
+    <button class="tab-btn" data-tab="add" onclick="switchTab('add')">إضافة منتج</button>
+    <button class="tab-btn" data-tab="sections" onclick="switchTab('sections')">سكاشن الصفحة</button>
+    <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">إعدادات المتجر</button>
+  </div>
+
+  <div class="panel">
+
+    <!-- === Products list === -->
+    <div class="panel-section active" id="tab-products">
+      <div class="card-box">
+        <h3>كل المنتجات (<span id="productCountLabel">0</span>)</h3>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>عرض؟</th><th>إجراءات</th></tr>
+            </thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="noProductsMsg" style="display:none;">لسه معندكيش منتجات، ابدئي بإضافة أول منتج من تبويب "إضافة منتج".</div>
+      </div>
+    </div>
+
+    <!-- === Add / edit product === -->
+    <div class="panel-section" id="tab-add">
+      <div class="card-box">
+        <h3 id="formTitle">إضافة منتج جديد</h3>
+        <input type="hidden" id="editId">
+        <div class="form-row">
+          <div>
+            <label>اسم المنتج</label>
+            <input type="text" id="pName" placeholder="مثال: روج مطفي وردي">
+          </div>
+          <div>
+            <label>الفئة</label>
+            <input type="text" id="pCategory" placeholder="مثال: مكياج / عناية بالبشرة">
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>السعر (ج.م)</label>
+            <input type="number" id="pPrice" placeholder="180">
+          </div>
+          <div>
+            <label>السعر قبل الخصم (اختياري)</label>
+            <input type="number" id="pOldPrice" placeholder="220">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div>
+            <label>وصف قصير</label>
+            <textarea id="pDesc" placeholder="وصف مختصر وجذاب للمنتج"></textarea>
+          </div>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="pOffer">
+          <label style="margin:0;">إظهار المنتج في قسم "العروض"</label>
+        </div>
+        <div class="form-row full">
+          <div>
+            <label>صورة المنتج</label>
+            <label class="img-upload" for="pImgInput" style="display:block;">
+              <input type="file" id="pImgInput" accept="image/*" onchange="previewImage(event,'pImgPreview','pImgData')" style="display:none;">
+              <div class="placeholder" id="pImgPlaceholder">اضغطي هنا لرفع صورة المنتج</div>
+              <img id="pImgPreview" style="display:none;">
+            </label>
+            <input type="hidden" id="pImgData">
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;">
+          <button class="btn btn-primary" onclick="saveProduct()" id="saveBtnLabel">حفظ المنتج</button>
+          <button class="btn btn-ghost" onclick="resetForm()">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- === Custom sections === -->
+    <div class="panel-section" id="tab-sections">
+      <div class="card-box">
+        <h3>سكاشن الصفحة المخصصة (<span id="sectionsCountLabel">0</span>)</h3>
+        <p style="font-size:13px;color:#8a7880;margin-bottom:18px;">السكاشن دي بتظهر في الصفحة الرئيسية بعد سكشن "كل المنتجات" بنفس ترتيبها هنا.</p>
+        <div id="sectionsListWrap"></div>
+        <div class="empty-state" id="noSectionsMsg" style="display:none;">لسه معملتيش أي سكشن مخصص.</div>
+      </div>
+
+      <div class="card-box">
+        <h3 id="sectionFormTitle">إضافة سكشن جديد</h3>
+        <input type="hidden" id="editSectionId">
+
+        <label>نوع السكشن</label>
+        <select id="sectionType" onchange="toggleSectionTypeFields()">
+          <option value="products">سكشن منتجات (بفئة معيّنة)</option>
+          <option value="banner">سكشن بانر (صورة ونص)</option>
+        </select>
+
+        <div style="margin-top:16px;">
+          <div class="form-row full">
+            <div>
+              <label>عنوان السكشن</label>
+              <input type="text" id="sectionTitle" placeholder="مثال: الأكثر مبيعاً">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div>
+              <label>وصف قصير</label>
+              <textarea id="sectionDesc" placeholder="وصف مختصر يظهر تحت العنوان"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products-type fields -->
+        <div id="sectionProductsFields">
+          <div class="form-row full">
+            <div>
+              <label>اسم الفئة (لازم يطابق فئة المنتجات بالظبط)</label>
+              <input type="text" id="sectionCategory" placeholder="مثال: مكياج">
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner-type fields -->
+        <div id="sectionBannerFields" style="display:none;">
+          <label>صورة البانر</label>
+          <label class="img-upload" for="sectionBannerInput" style="display:block;">
+            <input type="file" id="sectionBannerInput" accept="image/*" onchange="previewImage(event,'sectionBannerPreview','sectionBannerData')" style="display:none;">
+            <div class="placeholder" id="sectionBannerPlaceholder">اضغطي هنا لرفع صورة البانر</div>
+            <img id="sectionBannerPreview" style="display:none;">
+          </label>
+          <input type="hidden" id="sectionBannerData">
+          <div class="form-row full" style="margin-top:16px;">
+            <div>
+              <label>نص الزرار</label>
+              <input type="text" id="sectionBtnText" placeholder="شوفي أكتر">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveSection()" id="sectionSaveBtnLabel">حفظ السكشن</button>
+          <button class="btn btn-ghost" onclick="resetSectionForm()">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- === Store settings === -->
+    <div class="panel-section" id="tab-settings">
+      <div class="card-box">
+        <h3>شعار المتجر (اللوجو)</h3>
+        <label class="img-upload" for="logoInput" style="display:block;">
+          <input type="file" id="logoInput" accept="image/*" onchange="previewImage(event,'logoPreview','logoData')" style="display:none;">
+          <div class="placeholder" id="logoPlaceholder">اضغطي هنا لرفع اللوجو</div>
+          <img id="logoPreview" style="display:none;">
+        </label>
+        <input type="hidden" id="logoData">
+        <div style="margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveLogo()">حفظ اللوجو</button>
+          <button class="btn btn-danger" onclick="removeLogo()">إزالة اللوجو</button>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h3>رقم الواتساب لاستقبال الطلبات</h3>
+        <div class="form-row full">
+          <div>
+            <label>الرقم بصيغة دولية بدون + أو أصفار زيادة (مثال: 201060206721)</label>
+            <input type="text" id="waNumber" placeholder="201060206721">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveWhatsapp()">حفظ الرقم</button>
+      </div>
+
+      <div class="card-box">
+        <h3>بانر منتصف صفحة المنتجات</h3>
+        <label>صورة البانر (اختياري)</label>
+        <label class="img-upload" for="bannerInput" style="display:block;">
+          <input type="file" id="bannerInput" accept="image/*" onchange="previewImage(event,'bannerPreview','bannerData')" style="display:none;">
+          <div class="placeholder" id="bannerPlaceholder">اضغطي هنا لرفع صورة البانر</div>
+          <img id="bannerPreview" style="display:none;">
+        </label>
+        <input type="hidden" id="bannerData">
+        <div class="form-row full" style="margin-top:16px;">
+          <div>
+            <label>عنوان البانر</label>
+            <input type="text" id="bannerTitle" placeholder="جمالك، بلمستنا">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div>
+            <label>وصف البانر</label>
+            <textarea id="bannerDesc" placeholder="اكتشفي تشكيلة داندي الكاملة..."></textarea>
+          </div>
+        </div>
+        <div class="form-row full">
+          <div>
+            <label>نص زرار البانر</label>
+            <input type="text" id="bannerBtnText" placeholder="شوفي العروض الآن">
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-primary" onclick="saveBanner()">حفظ البانر</button>
+          <button class="btn btn-danger" onclick="removeBannerImage()">إزالة صورة البانر</button>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h3>تغيير كلمة مرور لوحة التحكم</h3>
+        <div class="form-row full">
+          <div>
+            <label>كلمة مرور جديدة</label>
+            <input type="text" id="newPass" placeholder="اكتبي كلمة مرور جديدة">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="changePassword()">تحديث كلمة المرور</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_SETTINGS = {
+  whatsapp:"201060206721",
+  logo:"",
+  bannerImg:"",
+  bannerTitle:"جمالك، بلمستنا",
+  bannerDesc:"اكتشفي تشكيلة داندي الكاملة من العناية والمكياج، بجودة تستاهليها.",
+  bannerBtnText:"شوفي العروض الآن"
+};
+const DEFAULT_PRODUCTS = [
+  {id:"p1", name:"روج مطفي وردي", category:"مكياج", price:180, oldPrice:220, desc:"لون وردي دافئ يدوم طويلاً بقوام مخملي.", img:"", offer:true},
+  {id:"p2", name:"سيروم فيتامين سي", category:"عناية بالبشرة", price:260, oldPrice:0, desc:"يفتح البشرة ويوحد لونها بتركيبة خفيفة.", img:"", offer:false},
+  {id:"p3", name:"كريم أساس مطفي", category:"مكياج", price:210, oldPrice:0, desc:"تغطية متوسطة لبشرة نضرة طول اليوم.", img:"", offer:false},
+  {id:"p4", name:"ماسكارا فوليوم", category:"مكياج", price:150, oldPrice:190, desc:"كثافة وطول للرموش بدون تكتل.", img:"", offer:true},
+  {id:"p5", name:"مرطب الورد البلغاري", category:"عناية بالبشرة", price:190, oldPrice:0, desc:"ترطيب عميق برائحة الورد الفاخرة.", img:"", offer:false},
+  {id:"p6", name:"بالم شفايف بالشيا", category:"عناية بالبشرة", price:90, oldPrice:120, desc:"يغذي الشفايف ويمنحها نعومة فورية.", img:"", offer:true},
+];
+
+/* ===== AUTH ===== */
+function getPassword(){
+  return localStorage.getItem('dandy_admin_pass') || 'dandy2026';
+}
+function doLogin(){
+  const val = document.getElementById('loginPass').value;
+  if(val === getPassword()){
+    sessionStorage.setItem('dandy_logged_in','1');
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('adminApp').style.display='block';
+    initAdmin();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+function doLogout(){
+  sessionStorage.removeItem('dandy_logged_in');
+  location.reload();
+}
+function checkAuth(){
+  if(sessionStorage.getItem('dandy_logged_in')==='1'){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('adminApp').style.display='block';
+    initAdmin();
+  }
+}
+
+/* ===== DATA ===== */
+function getSettings(){
+  const s = localStorage.getItem('dandy_settings');
+  return s ? JSON.parse(s) : DEFAULT_SETTINGS;
+}
+function saveSettingsObj(s){ localStorage.setItem('dandy_settings', JSON.stringify(s)); }
+function getProducts(){
+  const p = localStorage.getItem('dandy_products');
+  if(!p){ localStorage.setItem('dandy_products', JSON.stringify(DEFAULT_PRODUCTS)); return DEFAULT_PRODUCTS; }
+  return JSON.parse(p);
+}
+function saveProducts(list){ localStorage.setItem('dandy_products', JSON.stringify(list)); }
+
+function getSections(){
+  const s = localStorage.getItem('dandy_sections');
+  return s ? JSON.parse(s) : [];
+}
+function saveSections(list){ localStorage.setItem('dandy_sections', JSON.stringify(list)); }
+
+/* ===== TABS ===== */
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.panel-section').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='add' && !document.getElementById('editId').value){
+    resetForm();
+  }
+  if(tab==='sections' && !document.getElementById('editSectionId').value){
+    resetSectionForm();
+  }
+}
+
+/* ===== IMAGE UPLOAD ===== */
+function previewImage(event, previewId, dataId){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById(previewId).src = e.target.result;
+    document.getElementById(previewId).style.display='block';
+    document.getElementById(dataId).value = e.target.result;
+    const placeholderId = previewId.replace('Preview','Placeholder');
+    const ph = document.getElementById(placeholderId);
+    if(ph) ph.style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ===== PRODUCTS TABLE ===== */
+function renderProductsTable(){
+  const products = getProducts();
+  const tbody = document.getElementById('productsTableBody');
+  document.getElementById('productCountLabel').textContent = products.length;
+  document.getElementById('noProductsMsg').style.display = products.length ? 'none' : 'block';
+
+  tbody.innerHTML = products.map(p=>{
+    const img = p.img ? `<img src="${p.img}">` : `<div style="width:44px;height:44px;background:var(--cream);border-radius:10px;display:flex;align-items:center;justify-content:center;">🌸</div>`;
+    return `
+    <tr>
+      <td>${img}</td>
+      <td>${p.name}</td>
+      <td>${p.category}</td>
+      <td>${p.price} ج.م ${p.oldPrice>0?`<span style="color:#b7a7ad;text-decoration:line-through;font-size:12px;">${p.oldPrice}</span>`:''}</td>
+      <td>${p.offer ? '<span class="badge-mini">عرض</span>' : '—'}</td>
+      <td>
+        <div class="row-actions">
+          <button class="icon-mini" title="تعديل" onclick="editProduct('${p.id}')">✏️</button>
+          <button class="icon-mini" title="حذف" onclick="deleteProduct('${p.id}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function resetForm(){
+  document.getElementById('editId').value='';
+  document.getElementById('pName').value='';
+  document.getElementById('pCategory').value='';
+  document.getElementById('pPrice').value='';
+  document.getElementById('pOldPrice').value='';
+  document.getElementById('pDesc').value='';
+  document.getElementById('pOffer').checked=false;
+  document.getElementById('pImgData').value='';
+  document.getElementById('pImgPreview').style.display='none';
+  document.getElementById('pImgPlaceholder').style.display='block';
+  document.getElementById('formTitle').textContent='إضافة منتج جديد';
+  document.getElementById('saveBtnLabel').textContent='حفظ المنتج';
+}
+
+function editProduct(id){
+  const products = getProducts();
+  const p = products.find(x=>String(x.id)===String(id));
+  if(!p){ showToast('تعذر إيجاد المنتج'); return; }
+  document.getElementById('editId').value = p.id;
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pCategory').value = p.category;
+  document.getElementById('pPrice').value = p.price;
+  document.getElementById('pOldPrice').value = p.oldPrice || '';
+  document.getElementById('pDesc').value = p.desc;
+  document.getElementById('pOffer').checked = !!p.offer;
+  if(p.img){
+    document.getElementById('pImgData').value = p.img;
+    document.getElementById('pImgPreview').src = p.img;
+    document.getElementById('pImgPreview').style.display='block';
+    document.getElementById('pImgPlaceholder').style.display='none';
+  }
+  document.getElementById('formTitle').textContent='تعديل المنتج';
+  document.getElementById('saveBtnLabel').textContent='حفظ التعديلات';
+  switchTab('add');
+}
+
+function saveProduct(){
+  const name = document.getElementById('pName').value.trim();
+  const category = document.getElementById('pCategory').value.trim();
+  const price = parseFloat(document.getElementById('pPrice').value) || 0;
+  const oldPrice = parseFloat(document.getElementById('pOldPrice').value) || 0;
+  const desc = document.getElementById('pDesc').value.trim();
+  const offer = document.getElementById('pOffer').checked;
+  const img = document.getElementById('pImgData').value;
+  const editId = document.getElementById('editId').value;
+
+  if(!name || !price){
+    showToast('من فضلك اكتبي اسم المنتج والسعر');
+    return;
+  }
+
+  let products = getProducts();
+  if(editId){
+    products = products.map(p=> p.id===editId ? {...p, name, category, price, oldPrice, desc, offer, img} : p);
+    showToast('تم تحديث المنتج بنجاح ✅');
+  } else {
+    const id = 'p' + Date.now();
+    products.push({id, name, category, price, oldPrice, desc, offer, img});
+    showToast('تم إضافة المنتج بنجاح 🌸');
+  }
+  saveProducts(products);
+  renderProductsTable();
+  resetForm();
+  switchTab('products');
+}
+
+function deleteProduct(id){
+  try{
+    if(!confirm('متأكدة إنك عايزة تحذفي المنتج ده؟')) return;
+    let products = getProducts().filter(p=>String(p.id)!==String(id));
+    saveProducts(products);
+    renderProductsTable();
+    showToast('تم حذف المنتج');
+  }catch(err){
+    console.error(err);
+    showToast('حصل خطأ أثناء الحذف، حاولي تاني');
+  }
+}
+
+/* ===== CUSTOM SECTIONS ===== */
+function toggleSectionTypeFields(){
+  const type = document.getElementById('sectionType').value;
+  document.getElementById('sectionProductsFields').style.display = type==='products' ? 'block' : 'none';
+  document.getElementById('sectionBannerFields').style.display = type==='banner' ? 'block' : 'none';
+}
+
+function renderSectionsList(){
+  const sections = getSections();
+  const wrap = document.getElementById('sectionsListWrap');
+  document.getElementById('sectionsCountLabel').textContent = sections.length;
+  document.getElementById('noSectionsMsg').style.display = sections.length ? 'none' : 'block';
+
+  wrap.innerHTML = sections.map((s, idx)=>{
+    const thumb = s.type==='banner' && s.bannerImg
+      ? `<img class="thumb" src="${s.bannerImg}">`
+      : `<div class="thumb">${s.type==='banner' ? '🖼️' : '🌸'}</div>`;
+    const typeLabel = s.type==='banner' ? 'بانر' : `منتجات (${s.category || 'بدون فئة'})`;
+    return `
+    <div class="section-row">
+      ${thumb}
+      <div class="info">
+        <h5>${s.title || '(بدون عنوان)'}</h5>
+        <span>${typeLabel}</span>
+      </div>
+      <div class="order-buttons">
+        <button onclick="moveSection('${s.id}',-1)" title="لأعلى">▲</button>
+        <button onclick="moveSection('${s.id}',1)" title="لأسفل">▼</button>
+      </div>
+      <div class="row-actions">
+        <button class="icon-mini" title="تعديل" onclick="editSection('${s.id}')">✏️</button>
+        <button class="icon-mini" title="حذف" onclick="deleteSection('${s.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function resetSectionForm(){
+  document.getElementById('editSectionId').value='';
+  document.getElementById('sectionType').value='products';
+  document.getElementById('sectionTitle').value='';
+  document.getElementById('sectionDesc').value='';
+  document.getElementById('sectionCategory').value='';
+  document.getElementById('sectionBtnText').value='';
+  document.getElementById('sectionBannerData').value='';
+  document.getElementById('sectionBannerPreview').style.display='none';
+  document.getElementById('sectionBannerPlaceholder').style.display='block';
+  document.getElementById('sectionFormTitle').textContent='إضافة سكشن جديد';
+  document.getElementById('sectionSaveBtnLabel').textContent='حفظ السكشن';
+  toggleSectionTypeFields();
+}
+
+function editSection(id){
+  const sections = getSections();
+  const s = sections.find(x=>String(x.id)===String(id));
+  if(!s){ showToast('تعذر إيجاد السكشن'); return; }
+  document.getElementById('editSectionId').value = s.id;
+  document.getElementById('sectionType').value = s.type;
+  document.getElementById('sectionTitle').value = s.title || '';
+  document.getElementById('sectionDesc').value = s.desc || '';
+  document.getElementById('sectionCategory').value = s.category || '';
+  document.getElementById('sectionBtnText').value = s.btnText || '';
+  if(s.bannerImg){
+    document.getElementById('sectionBannerData').value = s.bannerImg;
+    document.getElementById('sectionBannerPreview').src = s.bannerImg;
+    document.getElementById('sectionBannerPreview').style.display='block';
+    document.getElementById('sectionBannerPlaceholder').style.display='none';
+  }
+  toggleSectionTypeFields();
+  document.getElementById('sectionFormTitle').textContent='تعديل السكشن';
+  document.getElementById('sectionSaveBtnLabel').textContent='حفظ التعديلات';
+  switchTab('sections');
+}
+
+function saveSection(){
+  const type = document.getElementById('sectionType').value;
+  const title = document.getElementById('sectionTitle').value.trim();
+  const desc = document.getElementById('sectionDesc').value.trim();
+  const category = document.getElementById('sectionCategory').value.trim();
+  const btnText = document.getElementById('sectionBtnText').value.trim();
+  const bannerImg = document.getElementById('sectionBannerData').value;
+  const editId = document.getElementById('editSectionId').value;
+
+  if(!title){
+    showToast('من فضلك اكتبي عنوان السكشن');
+    return;
+  }
+  if(type==='products' && !category){
+    showToast('من فضلك اكتبي اسم الفئة لسكشن المنتجات');
+    return;
+  }
+
+  let sections = getSections();
+  if(editId){
+    sections = sections.map(s=> String(s.id)===String(editId) ? {...s, type, title, desc, category, btnText, bannerImg} : s);
+    showToast('تم تحديث السكشن بنجاح ✅');
+  } else {
+    const id = 's' + Date.now();
+    sections.push({id, type, title, desc, category, btnText, bannerImg});
+    showToast('تم إضافة السكشن بنجاح 🌸');
+  }
+  saveSections(sections);
+  renderSectionsList();
+  resetSectionForm();
+}
+
+function deleteSection(id){
+  try{
+    if(!confirm('متأكدة إنك عايزة تحذفي السكشن ده؟')) return;
+    let sections = getSections().filter(s=>String(s.id)!==String(id));
+    saveSections(sections);
+    renderSectionsList();
+    showToast('تم حذف السكشن');
+  }catch(err){
+    console.error(err);
+    showToast('حصل خطأ أثناء الحذف، حاولي تاني');
+  }
+}
+
+function moveSection(id, direction){
+  let sections = getSections();
+  const idx = sections.findIndex(s=>String(s.id)===String(id));
+  if(idx === -1) return;
+  const newIdx = idx + direction;
+  if(newIdx < 0 || newIdx >= sections.length) return;
+  [sections[idx], sections[newIdx]] = [sections[newIdx], sections[idx]];
+  saveSections(sections);
+  renderSectionsList();
+}
+
+/* ===== SETTINGS ===== */
+function loadSettingsForm(){
+  const s = getSettings();
+  document.getElementById('waNumber').value = s.whatsapp;
+  if(s.logo){
+    document.getElementById('logoPreview').src = s.logo;
+    document.getElementById('logoPreview').style.display='block';
+    document.getElementById('logoPlaceholder').style.display='none';
+    document.getElementById('logoData').value = s.logo;
+  }
+  document.getElementById('bannerTitle').value = s.bannerTitle || '';
+  document.getElementById('bannerDesc').value = s.bannerDesc || '';
+  document.getElementById('bannerBtnText').value = s.bannerBtnText || '';
+  if(s.bannerImg){
+    document.getElementById('bannerPreview').src = s.bannerImg;
+    document.getElementById('bannerPreview').style.display='block';
+    document.getElementById('bannerPlaceholder').style.display='none';
+    document.getElementById('bannerData').value = s.bannerImg;
+  }
+}
+function saveLogo(){
+  const data = document.getElementById('logoData').value;
+  if(!data){ showToast('من فضلك ارفعي صورة الشعار الأول'); return; }
+  const s = getSettings();
+  s.logo = data;
+  saveSettingsObj(s);
+  showToast('تم حفظ الشعار بنجاح ✅');
+}
+function removeLogo(){
+  const s = getSettings();
+  s.logo = '';
+  saveSettingsObj(s);
+  document.getElementById('logoPreview').style.display='none';
+  document.getElementById('logoPlaceholder').style.display='block';
+  document.getElementById('logoData').value='';
+  showToast('تم إزالة الشعار');
+}
+function saveWhatsapp(){
+  const num = document.getElementById('waNumber').value.trim().replace(/\D/g,'');
+  if(!num){ showToast('اكتبي رقم صحيح'); return; }
+  const s = getSettings();
+  s.whatsapp = num;
+  saveSettingsObj(s);
+  showToast('تم حفظ رقم الواتساب ✅');
+}
+function saveBanner(){
+  const s = getSettings();
+  s.bannerImg = document.getElementById('bannerData').value || '';
+  s.bannerTitle = document.getElementById('bannerTitle').value.trim() || 'جمالك، بلمستنا';
+  s.bannerDesc = document.getElementById('bannerDesc').value.trim();
+  s.bannerBtnText = document.getElementById('bannerBtnText').value.trim() || 'شوفي العروض الآن';
+  saveSettingsObj(s);
+  showToast('تم حفظ البانر بنجاح ✅');
+}
+function removeBannerImage(){
+  const s = getSettings();
+  s.bannerImg = '';
+  saveSettingsObj(s);
+  document.getElementById('bannerPreview').style.display='none';
+  document.getElementById('bannerPlaceholder').style.display='block';
+  document.getElementById('bannerData').value='';
+  showToast('تم إزالة صورة البانر');
+}
+function changePassword(){
+  const p = document.getElementById('newPass').value.trim();
+  if(!p || p.length < 4){ showToast('كلمة المرور لازم تكون 4 حروف على الأقل'); return; }
+  localStorage.setItem('dandy_admin_pass', p);
+  document.getElementById('newPass').value='';
+  showToast('تم تغيير كلمة المرور بنجاح ✅');
+}
+
+/* ===== TOAST ===== */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ===== INIT ===== */
+function initAdmin(){
+  renderProductsTable();
+  loadSettingsForm();
+  renderSectionsList();
+  toggleSectionTypeFields();
+}
+checkAuth();
+</script>
+</body>
+</html>

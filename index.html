@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داندي | Dandy Cosmetics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FDF6F3;
+    --cream-2:#F7EAE6;
+    --pink:#E8B4BC;
+    --pink-soft:#F2D2D8;
+    --burgundy:#8B3A4A;
+    --burgundy-dark:#5E2431;
+    --gold:#C9A876;
+    --ink:#2B2024;
+    --white:#FFFFFF;
+    --shadow: 0 20px 60px rgba(139,58,74,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Tajawal',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Aref Ruqaa',serif;}
+
+  /* ===== Loader / Drop signature ===== */
+  .drop-divider{
+    display:flex;align-items:center;justify-content:center;
+    gap:14px;margin:0 auto;
+  }
+  .drop-divider .line{flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+  .drop{
+    width:14px;height:18px;
+    background:var(--gold);
+    border-radius:0 100% 100% 100%;
+    transform:rotate(45deg);
+    box-shadow:0 0 12px rgba(201,168,118,.5);
+  }
+
+  /* ===== Top bar ===== */
+  .topbar{
+    position:sticky;top:0;z-index:100;
+    background:rgba(253,246,243,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(139,58,74,0.08);
+    padding:16px 5%;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .logo-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .logo-img{height:46px;width:auto;object-fit:contain;}
+  .logo-text{font-family:'Aref Ruqaa',serif;font-size:28px;color:var(--burgundy);font-weight:700;}
+  .nav-links{display:flex;gap:34px;font-size:15px;font-weight:500;}
+  .nav-links a{color:var(--ink);text-decoration:none;position:relative;padding:4px 0;}
+  .nav-links a::after{content:'';position:absolute;bottom:0;right:0;width:0;height:2px;background:var(--burgundy);transition:width .3s;}
+  .nav-links a:hover::after{width:100%;}
+  .top-actions{display:flex;align-items:center;gap:18px;}
+  .icon-btn{position:relative;cursor:pointer;background:none;border:none;font-size:22px;color:var(--burgundy);}
+  .cart-count{
+    position:absolute;top:-8px;left:-8px;background:var(--burgundy);color:#fff;
+    font-size:11px;width:18px;height:18px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-weight:700;
+  }
+  .burger{display:none;font-size:26px;background:none;border:none;color:var(--burgundy);cursor:pointer;}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;
+    min-height:88vh;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;
+    padding:60px 5% 100px;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(232,180,188,0.35), transparent 55%),
+      radial-gradient(ellipse at 80% 70%, rgba(201,168,118,0.25), transparent 55%),
+      var(--cream);
+    overflow:hidden;
+  }
+  .hero-petals{position:absolute;inset:0;pointer-events:none;}
+  .petal{
+    position:absolute;
+    width:26px;height:26px;
+    background:var(--pink);
+    border-radius:0 50% 50% 50%;
+    opacity:.35;
+    animation:float 12s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0) rotate(45deg);}
+    50%{transform:translateY(-40px) rotate(60deg);}
+  }
+  .hero-content{position:relative;z-index:2;max-width:720px;}
+  .hero-eyebrow{
+    font-size:14px;letter-spacing:4px;color:var(--gold);
+    text-transform:uppercase;font-weight:700;margin-bottom:18px;
+    opacity:0;animation:fadeUp .9s .1s forwards;
+  }
+  .hero h1{
+    font-size:clamp(48px,8vw,88px);
+    color:var(--burgundy-dark);
+    line-height:1.15;
+    margin-bottom:20px;
+    opacity:0;animation:fadeUp .9s .25s forwards;
+  }
+  .hero p{
+    font-size:19px;color:#5b4750;line-height:1.9;margin-bottom:40px;
+    opacity:0;animation:fadeUp .9s .4s forwards;
+  }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:16px 40px;border-radius:100px;border:none;
+    font-family:'Tajawal',sans-serif;font-size:16px;font-weight:700;
+    cursor:pointer;transition:transform .25s, box-shadow .25s;
+  }
+  .btn-primary{background:var(--burgundy);color:#fff;box-shadow:0 12px 30px rgba(139,58,74,0.35);}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(139,58,74,0.45);}
+  .btn-outline{background:transparent;border:2px solid var(--burgundy);color:var(--burgundy);}
+  .btn-outline:hover{background:var(--burgundy);color:#fff;}
+  .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp .9s .55s forwards;}
+
+  /* ===== Mid Banner ===== */
+  .mid-banner{
+    margin:56px auto;max-width:1280px;border-radius:28px;overflow:hidden;position:relative;
+    background:linear-gradient(120deg,var(--burgundy) 0%, var(--burgundy-dark) 100%);
+    min-height:220px;display:flex;align-items:center;
+  }
+  .mid-banner-bg{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+    opacity:0;transition:opacity .3s;
+  }
+  .mid-banner-bg.active{opacity:1;}
+  .mid-banner-overlay{
+    position:absolute;inset:0;background:linear-gradient(120deg, rgba(139,58,74,0.75), rgba(94,36,49,0.75));
+  }
+  .mid-banner::before{
+    content:'';position:absolute;inset:0;z-index:1;
+    background:radial-gradient(circle at 85% 30%, rgba(232,180,188,0.35), transparent 55%),
+               radial-gradient(circle at 10% 80%, rgba(201,168,118,0.3), transparent 55%);
+  }
+  .mid-banner-inner{position:relative;z-index:2;padding:50px 6%;width:100%;}
+  .mid-banner-text{max-width:560px;color:#fff;}
+  .mid-banner-text h2{font-size:clamp(28px,4vw,38px);margin:10px 0 14px;color:#fff;}
+  .mid-banner-text p{font-size:15.5px;line-height:1.8;color:rgba(255,255,255,0.85);}
+
+  /* ===== Dynamic custom sections ===== */
+  .custom-banner-section{padding:0 5%;}
+  .custom-banner-section .mid-banner{margin:0 auto 90px;}
+  .custom-products-section{padding:90px 5%;}
+
+  /* ===== Sections generic ===== */
+  section{padding:90px 5%;}
+  .section-head{text-align:center;max-width:640px;margin:0 auto 56px;}
+  .section-eyebrow{color:var(--gold);font-weight:700;letter-spacing:3px;font-size:13px;text-transform:uppercase;}
+  .section-head h2{font-size:clamp(32px,5vw,46px);color:var(--burgundy-dark);margin:14px 0;}
+  .section-head p{color:#6b5960;font-size:16px;line-height:1.8;}
+
+  /* ===== Product grid ===== */
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:28px;max-width:1280px;margin:0 auto;
+  }
+  .card{
+    background:var(--white);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    transition:transform .35s ease, box-shadow .35s ease;
+    display:flex;flex-direction:column;
+    position:relative;
+  }
+  .card:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(139,58,74,0.2);}
+  .card .badge{
+    position:absolute;top:16px;right:16px;background:var(--gold);color:#fff;
+    font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;z-index:2;
+  }
+  .card-img{
+    height:260px;background:var(--cream-2);
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;position:relative;
+  }
+  .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+  .card:hover .card-img img{transform:scale(1.08);}
+  .card-body{padding:22px 20px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .card-cat{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:1px;}
+  .card-title{font-size:19px;font-weight:700;color:var(--ink);}
+  .card-desc{font-size:13.5px;color:#8a7880;line-height:1.6;flex:1;}
+  .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+  .card-price{font-size:18px;font-weight:900;color:var(--burgundy);}
+  .card-price .old{font-size:13px;color:#b7a7ad;text-decoration:line-through;font-weight:400;margin-left:6px;}
+  .add-btn{
+    background:var(--burgundy);color:#fff;border:none;border-radius:100px;
+    padding:10px 20px;font-size:13.5px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;gap:6px;transition:.25s;
+  }
+  .add-btn:hover{background:var(--burgundy-dark);transform:scale(1.04);}
+  .empty-msg{text-align:center;color:#a68d94;font-size:16px;padding:60px 0;grid-column:1/-1;}
+
+  /* ===== Offers strip ===== */
+  .offers{background:linear-gradient(135deg,var(--burgundy) 0%, var(--burgundy-dark) 100%);color:#fff;position:relative;overflow:hidden;}
+  .offers::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 30% 50%, rgba(201,168,118,0.25), transparent 60%);
+  }
+  .offers .section-head h2{color:#fff;}
+  .offers .section-head p{color:rgba(255,255,255,0.75);}
+  .offers .card{background:rgba(255,255,255,0.06);backdrop-filter:blur(6px);}
+  .offers .card-title,.offers .card-desc{color:#fff;}
+  .offers .card-desc{color:rgba(255,255,255,0.7);}
+  .offers .card-img{background:rgba(255,255,255,0.08);}
+
+  /* ===== About / signature ===== */
+  .about{
+    display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+    max-width:1180px;margin:0 auto;
+  }
+  .about-visual{
+    aspect-ratio:4/5;border-radius:32px;
+    background:linear-gradient(160deg,var(--pink-soft),var(--pink));
+    position:relative;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .about-visual .ring{
+    position:absolute;border:1px solid rgba(255,255,255,0.5);border-radius:50%;
+  }
+  .about-visual .ring.r1{width:70%;height:70%;}
+  .about-visual .ring.r2{width:50%;height:50%;}
+  .about-visual .center-drop{width:60px;height:76px;background:var(--white);border-radius:0 100% 100% 100%;transform:rotate(45deg);box-shadow:0 20px 50px rgba(139,58,74,0.25);}
+  .about-text h2{font-size:clamp(30px,4vw,42px);color:var(--burgundy-dark);margin-bottom:20px;}
+  .about-text p{color:#5b4750;line-height:2;font-size:16px;margin-bottom:16px;}
+  .stats{display:flex;gap:40px;margin-top:30px;}
+  .stat b{display:block;font-size:30px;color:var(--burgundy);font-family:'Aref Ruqaa',serif;}
+  .stat span{font-size:13px;color:#8a7880;}
+
+  /* ===== Footer ===== */
+  footer{background:var(--burgundy-dark);color:rgba(255,255,255,0.85);padding:60px 5% 30px;}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;max-width:1180px;margin:0 auto 40px;}
+  .footer-brand .logo-text{color:#fff;}
+  .footer-brand p{margin-top:14px;font-size:14px;line-height:1.8;color:rgba(255,255,255,0.6);max-width:320px;}
+  .social-row{display:flex;gap:10px;margin-top:20px;}
+  .social-icon{
+    width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.08);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    transition:.25s;
+  }
+  .social-icon:hover{background:var(--gold);transform:translateY(-3px);}
+  footer h4{font-size:15px;margin-bottom:16px;color:var(--gold);}
+  footer ul{list-style:none;}
+  footer li{margin-bottom:10px;font-size:14px;}
+  footer a{color:rgba(255,255,255,0.75);text-decoration:none;}
+  footer a:hover{color:#fff;}
+  .footer-bottom{text-align:center;font-size:13px;color:rgba(255,255,255,0.45);border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;max-width:1180px;margin:0 auto;}
+
+  /* ===== WhatsApp float button ===== */
+  .wa-float{
+    position:fixed;bottom:26px;left:26px;z-index:200;
+    width:60px;height:60px;border-radius:50%;
+    background:#25D366;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 10px 30px rgba(37,211,102,0.5);
+    cursor:pointer;transition:transform .25s;
+    animation:pulse 2.4s infinite;
+  }
+  .wa-float:hover{transform:scale(1.08);}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(37,211,102,0.5);}
+    70%{box-shadow:0 0 0 16px rgba(37,211,102,0);}
+    100%{box-shadow:0 0 0 0 rgba(37,211,102,0);}
+  }
+
+  /* ===== Cart Drawer ===== */
+  .overlay{position:fixed;inset:0;background:rgba(43,32,36,0.5);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .overlay.active{opacity:1;pointer-events:auto;}
+  .cart-drawer{
+    position:fixed;top:0;left:-420px;width:100%;max-width:420px;height:100%;
+    background:var(--cream);z-index:301;transition:left .4s cubic-bezier(.4,0,.2,1);
+    display:flex;flex-direction:column;box-shadow:20px 0 60px rgba(0,0,0,0.2);
+  }
+  .cart-drawer.active{left:0;}
+  .cart-header{padding:22px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(139,58,74,0.1);}
+  .cart-header h3{font-size:24px;color:var(--burgundy-dark);}
+  .close-btn{background:none;border:none;font-size:26px;cursor:pointer;color:var(--ink);}
+  .cart-items{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;}
+  .cart-item{display:flex;gap:14px;background:#fff;border-radius:16px;padding:12px;box-shadow:0 6px 20px rgba(139,58,74,0.08);}
+  .cart-item img{width:70px;height:70px;border-radius:12px;object-fit:cover;background:var(--cream-2);}
+  .cart-item-info{flex:1;display:flex;flex-direction:column;gap:4px;}
+  .cart-item-info h5{font-size:14.5px;}
+  .cart-item-info .price{color:var(--burgundy);font-weight:700;font-size:14px;}
+  .qty-row{display:flex;align-items:center;gap:10px;}
+  .qty-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--burgundy);background:none;color:var(--burgundy);cursor:pointer;font-weight:700;}
+  .remove-x{background:none;border:none;color:#c98a94;cursor:pointer;font-size:18px;align-self:flex-start;}
+  .cart-empty{text-align:center;color:#a68d94;padding:60px 20px;}
+  .cart-footer{padding:20px 24px;border-top:1px solid rgba(139,58,74,0.1);}
+  .cart-total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:var(--burgundy-dark);margin-bottom:16px;}
+  .cart-footer .btn{width:100%;justify-content:center;}
+
+  /* ===== Toast ===== */
+  .toast{
+    position:fixed;bottom:30px;right:30px;background:var(--burgundy-dark);color:#fff;
+    padding:16px 26px;border-radius:14px;font-size:14.5px;z-index:400;
+    box-shadow:0 12px 30px rgba(0,0,0,0.25);
+    transform:translateY(120px);opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);
+  }
+  .toast.show{transform:translateY(0);opacity:1;}
+
+  /* ===== Mobile ===== */
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    .burger{display:block;}
+    .about{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Top bar ===== -->
+<div class="topbar">
+  <div class="logo-wrap" onclick="location.hash='#home'">
+    <img id="siteLogo" class="logo-img" src="" alt="داندي" style="display:none;">
+    <span class="logo-text" id="logoTextFallback">داندي</span>
+  </div>
+  <nav class="nav-links">
+    <a href="#home">الرئيسية</a>
+    <a href="#offers">العروض</a>
+    <a href="#products">كل المنتجات</a>
+    <a href="#about">عن داندي</a>
+    <a href="#contact">تواصل معنا</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" onclick="openCart()">🛍️<span class="cart-count" id="cartCount">0</span></button>
+    <button class="burger" onclick="toggleMobileNav()">☰</button>
+  </div>
+</div>
+
+<!-- Mobile nav -->
+<div id="mobileNav" style="display:none;background:var(--white);padding:20px 6%;flex-direction:column;gap:16px;border-bottom:1px solid rgba(139,58,74,.1);">
+  <a href="#home" style="color:var(--ink);text-decoration:none;">الرئيسية</a>
+  <a href="#offers" style="color:var(--ink);text-decoration:none;">العروض</a>
+  <a href="#products" style="color:var(--ink);text-decoration:none;">كل المنتجات</a>
+  <a href="#about" style="color:var(--ink);text-decoration:none;">عن داندي</a>
+  <a href="#contact" style="color:var(--ink);text-decoration:none;">تواصل معنا</a>
+</div>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="home">
+  <div class="hero-petals">
+    <div class="petal" style="top:15%;right:10%;animation-delay:0s;"></div>
+    <div class="petal" style="top:60%;right:20%;animation-delay:2s;width:18px;height:18px;"></div>
+    <div class="petal" style="top:30%;left:12%;animation-delay:4s;"></div>
+    <div class="petal" style="top:70%;left:8%;animation-delay:1s;width:20px;height:20px;"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Dandy Cosmetics</div>
+    <h1>جمالك يستاهل داندي</h1>
+    <p>مستحضرات تجميل فاخرة صُنعت لتُبرز جمالك الطبيعي — عناية ولمسة أنوثة في كل منتج.</p>
+    <div class="hero-actions">
+      <a href="#products" class="btn btn-primary">تسوقي الآن</a>
+      <a href="#offers" class="btn btn-outline">شوفي العروض</a>
+    </div>
+  </div>
+</section>
+
+<div class="drop-divider" style="margin:0 0 20px;"><div class="line"></div><div class="drop"></div><div class="line"></div></div>
+
+<!-- ===== Offers ===== -->
+<section class="offers" id="offers">
+  <div class="section-head">
+    <div class="section-eyebrow">Limited Time</div>
+    <h2>عروض داندي</h2>
+    <p>أحلى العروض على منتجاتك المفضلة، لفترة محدودة.</p>
+  </div>
+  <div class="grid" id="offersGrid"></div>
+</section>
+
+<div class="drop-divider" style="margin:30px 0;"><div class="line"></div><div class="drop"></div><div class="line"></div></div>
+
+<!-- ===== Products ===== -->
+<section id="products">
+  <div class="section-head">
+    <div class="section-eyebrow">Full Collection</div>
+    <h2>كل المنتجات</h2>
+    <p>تشكيلة داندي الكاملة من العناية والمكياج.</p>
+  </div>
+  <div class="grid" id="productsGridTop"></div>
+
+  <div class="mid-banner">
+    <div class="mid-banner-bg" id="midBannerBg"></div>
+    <div class="mid-banner-overlay" id="midBannerOverlay" style="display:none;"></div>
+    <div class="mid-banner-inner">
+      <div class="mid-banner-text">
+        <div class="section-eyebrow" style="color:rgba(255,255,255,0.85);">Dandy Cosmetics</div>
+        <h2 id="midBannerTitle">جمالك، بلمستنا</h2>
+        <p id="midBannerDesc">اكتشفي تشكيلة داندي الكاملة من العناية والمكياج، بجودة تستاهليها.</p>
+        <a href="#offers" class="btn" style="background:#fff;color:var(--burgundy);margin-top:10px;" id="midBannerBtn">شوفي العروض الآن</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" id="productsGrid"></div>
+</section>
+
+<!-- ===== Dynamic Custom Sections ===== -->
+<div id="dynamicSections"></div>
+
+<!-- ===== About ===== -->
+<section id="about">
+  <div class="about">
+    <div class="about-visual">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="center-drop"></div>
+    </div>
+    <div class="about-text">
+      <div class="section-eyebrow">Our Story</div>
+      <h2>عن داندي</h2>
+      <p>داندي مش مجرد براند مستحضرات تجميل، داندي إحساس بالثقة. بنؤمن إن الجمال الحقيقي بيبان لما تحسي إنك مرتاحة في جلدك، عشان كده بنختار كل مكون بعناية عشان يديكِ نتيجة حقيقية وملموسة.</p>
+      <p>من العناية بالبشرة للمكياج، كل منتج داندي مصمم يخليكِ تحسي بالفخامة في روتينك اليومي.</p>
+      <div class="stats">
+        <div class="stat"><b id="statProducts">0</b><span>منتج</span></div>
+        <div class="stat"><b>+5000</b><span>عميلة سعيدة</span></div>
+        <div class="stat"><b>100%</b><span>جودة مضمونة</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer / Contact ===== -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo-text display">داندي</span>
+      <p>مستحضرات تجميل بلمسة فخامة وأنوثة، من داندي ليكِ.</p>
+      <div class="social-row">
+        <a href="https://www.facebook.com/share/g/1DDE37h6R4/?mibextid=wwXIfr" target="_blank" class="social-icon" title="فيسبوك">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.53 17.52 2.04 12 2.04S2 6.53 2 12.06c0 5 3.66 9.13 8.44 9.88v-6.99h-2.54v-2.89h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.89h-2.34V21.94C18.34 21.19 22 17.06 22 12.06z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/dandy_skincare_cosmotics?igsh=cmN6aHlqZzZjc3Nk" target="_blank" class="social-icon" title="انستجرام">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.24 2.23.41.56.21.96.47 1.38.89.42.42.68.82.89 1.38.17.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.8-.41 2.23-.21.56-.47.96-.89 1.38-.42.42-.82.68-1.38.89-.42.17-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.24-2.23-.41-.56-.21-.96-.47-1.38-.89-.42-.42-.68-.82-.89-1.38-.17-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.24-1.8.41-2.23.21-.56.47-.96.89-1.38.42-.42.82-.68 1.38-.89.42-.17 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.13 1.38C1.35 2.68.94 3.35.63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.67.66 1.34 1.07 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38.66-.67 1.07-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.94 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 12 18.16 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 12 8a4 4 0 0 1 0 8zm6.4-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg>
+        </a>
+        <a id="waFooterIconLink" href="#" target="_blank" class="social-icon" title="واتساب">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2C6.478 2 2 6.478 2 12.004c0 1.99.583 3.844 1.588 5.407L2 22l4.694-1.55A9.96 9.96 0 0 0 12.004 22C17.53 22 22 17.53 22 12.004 22 6.478 17.53 2 12.004 2zm0 18.13a8.1 8.1 0 0 1-4.13-1.13l-.296-.176-2.786.92.93-2.716-.192-.279A8.09 8.09 0 0 1 3.87 12.004c0-4.49 3.646-8.136 8.134-8.136 4.49 0 8.136 3.646 8.136 8.136 0 4.49-3.646 8.126-8.136 8.126z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h4>روابط سريعة</h4>
+      <ul>
+        <li><a href="#home">الرئيسية</a></li>
+        <li><a href="#products">كل المنتجات</a></li>
+        <li><a href="#offers">العروض</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>تواصلي معنا</h4>
+      <ul>
+        <li><a id="waFooterLink" href="#" target="_blank">واتساب: 01060206721</a></li>
+        <li><a href="https://www.instagram.com/dandy_skincare_cosmotics?igsh=cmN6aHlqZzZjc3Nk" target="_blank">انستجرام</a></li>
+        <li><a href="https://www.facebook.com/share/g/1DDE37h6R4/?mibextid=wwXIfr" target="_blank">فيسبوك</a></li>
+        <li><a href="admin.html" style="opacity:.5;font-size:12px;">لوحة التحكم</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Dandy Cosmetics. جميع الحقوق محفوظة.</div>
+</footer>
+
+<!-- ===== WhatsApp float ===== -->
+<a id="waFloat" class="wa-float" href="#" target="_blank" title="اطلبي عن طريق واتساب">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2C6.478 2 2 6.478 2 12.004c0 1.99.583 3.844 1.588 5.407L2 22l4.694-1.55A9.96 9.96 0 0 0 12.004 22C17.53 22 22 17.53 22 12.004 22 6.478 17.53 2 12.004 2zm0 18.13a8.1 8.1 0 0 1-4.13-1.13l-.296-.176-2.786.92.93-2.716-.192-.279A8.09 8.09 0 0 1 3.87 12.004c0-4.49 3.646-8.136 8.134-8.136 4.49 0 8.136 3.646 8.136 8.136 0 4.49-3.646 8.126-8.136 8.126z"/></svg>
+</a>
+
+<!-- ===== Cart Drawer ===== -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>سلة المشتريات</h3>
+    <button class="close-btn" onclick="closeCart()">×</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>الإجمالي</span><span id="cartTotal">0 ج.م</span></div>
+    <button class="btn btn-primary" onclick="checkoutWhatsapp()">إتمام الطلب عبر واتساب</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ DATA LAYER ============ */
+const DEFAULT_SETTINGS = {
+  whatsapp: "201060206721",
+  logo: "",
+  bannerImg: "",
+  bannerTitle: "جمالك، بلمستنا",
+  bannerDesc: "اكتشفي تشكيلة داندي الكاملة من العناية والمكياج، بجودة تستاهليها.",
+  bannerBtnText: "شوفي العروض الآن"
+};
+
+const DEFAULT_PRODUCTS = [
+  {id:"p1", name:"روج مطفي وردي", category:"مكياج", price:180, oldPrice:220, desc:"لون وردي دافئ يدوم طويلاً بقوام مخملي.", img:"", offer:true},
+  {id:"p2", name:"سيروم فيتامين سي", category:"عناية بالبشرة", price:260, oldPrice:0, desc:"يفتح البشرة ويوحد لونها بتركيبة خفيفة.", img:"", offer:false},
+  {id:"p3", name:"كريم أساس مطفي", category:"مكياج", price:210, oldPrice:0, desc:"تغطية متوسطة لبشرة نضرة طول اليوم.", img:"", offer:false},
+  {id:"p4", name:"ماسكارا فوليوم", category:"مكياج", price:150, oldPrice:190, desc:"كثافة وطول للرموش بدون تكتل.", img:"", offer:true},
+  {id:"p5", name:"مرطب الورد البلغاري", category:"عناية بالبشرة", price:190, oldPrice:0, desc:"ترطيب عميق برائحة الورد الفاخرة.", img:"", offer:false},
+  {id:"p6", name:"بالم شفايف بالشيا", category:"عناية بالبشرة", price:90, oldPrice:120, desc:"يغذي الشفايف ويمنحها نعومة فورية.", img:"", offer:true},
+];
+
+function getSettings(){
+  const s = localStorage.getItem('dandy_settings');
+  return s ? JSON.parse(s) : DEFAULT_SETTINGS;
+}
+function getProducts(){
+  const p = localStorage.getItem('dandy_products');
+  if(!p){
+    localStorage.setItem('dandy_products', JSON.stringify(DEFAULT_PRODUCTS));
+    return DEFAULT_PRODUCTS;
+  }
+  return JSON.parse(p);
+}
+function getCart(){
+  const c = localStorage.getItem('dandy_cart');
+  return c ? JSON.parse(c) : [];
+}
+function saveCart(cart){
+  localStorage.setItem('dandy_cart', JSON.stringify(cart));
+  renderCart();
+}
+
+/* ============ RENDER PRODUCTS ============ */
+function productCard(p){
+  const imgHtml = p.img ? `<img src="${p.img}" alt="${p.name}">` : `<div style="font-size:60px;">🌸</div>`;
+  const priceHtml = p.offer && p.oldPrice > 0
+    ? `<span class="old">${p.oldPrice} ج.م</span>${p.price} ج.م`
+    : `${p.price} ج.م`;
+  return `
+    <div class="card">
+      ${p.offer ? '<span class="badge">عرض خاص</span>' : ''}
+      <div class="card-img">${imgHtml}</div>
+      <div class="card-body">
+        <span class="card-cat">${p.category}</span>
+        <h3 class="card-title">${p.name}</h3>
+        <p class="card-desc">${p.desc}</p>
+        <div class="card-footer">
+          <span class="card-price">${priceHtml}</span>
+          <button class="add-btn" onclick="addToCart('${p.id}')">أضيفي للسلة 🛍️</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderProducts(){
+  const products = getProducts();
+  const offers = products.filter(p=>p.offer);
+  const offersGrid = document.getElementById('offersGrid');
+  const productsGridTop = document.getElementById('productsGridTop');
+  const productsGrid = document.getElementById('productsGrid');
+
+  offersGrid.innerHTML = offers.length
+    ? offers.map(productCard).join('')
+    : `<div class="empty-msg">لا يوجد عروض حالياً، تابعينا قريباً ✨</div>`;
+
+  if(products.length){
+    const half = Math.ceil(products.length / 2);
+    const firstHalf = products.slice(0, half);
+    const secondHalf = products.slice(half);
+    productsGridTop.innerHTML = firstHalf.map(productCard).join('');
+    productsGrid.innerHTML = secondHalf.length ? secondHalf.map(productCard).join('') : '';
+  } else {
+    productsGridTop.innerHTML = `<div class="empty-msg">لسه معندناش منتجات، قريباً هتلاقي تشكيلة داندي هنا 🌸</div>`;
+    productsGrid.innerHTML = '';
+  }
+
+  document.getElementById('statProducts').textContent = products.length;
+}
+
+/* ============ DYNAMIC CUSTOM SECTIONS ============ */
+function getSections(){
+  const s = localStorage.getItem('dandy_sections');
+  return s ? JSON.parse(s) : [];
+}
+
+function renderDynamicSections(){
+  const sections = getSections();
+  const wrap = document.getElementById('dynamicSections');
+  const allProducts = getProducts();
+
+  wrap.innerHTML = sections.map(s=>{
+    if(s.type === 'banner'){
+      const bgHtml = s.bannerImg ? `
+        <div class="mid-banner-bg active" style="background-image:url('${s.bannerImg}');"></div>
+        <div class="mid-banner-overlay" style="display:block;"></div>` : '';
+      return `
+        <div class="custom-banner-section">
+          <div class="mid-banner">
+            ${bgHtml}
+            <div class="mid-banner-inner">
+              <div class="mid-banner-text">
+                <div class="section-eyebrow" style="color:rgba(255,255,255,0.85);">Dandy Cosmetics</div>
+                <h2>${s.title || ''}</h2>
+                <p>${s.desc || ''}</p>
+                ${s.btnText ? `<a href="#products" class="btn" style="background:#fff;color:var(--burgundy);margin-top:10px;">${s.btnText}</a>` : ''}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    } else {
+      const filtered = allProducts.filter(p => p.category && s.category && p.category.trim() === s.category.trim());
+      const cardsHtml = filtered.length
+        ? filtered.map(productCard).join('')
+        : `<div class="empty-msg">لا يوجد منتجات في هذه الفئة حالياً</div>`;
+      return `
+        <section class="custom-products-section">
+          <div class="section-head">
+            <div class="section-eyebrow">Dandy Cosmetics</div>
+            <h2>${s.title || ''}</h2>
+            ${s.desc ? `<p>${s.desc}</p>` : ''}
+          </div>
+          <div class="grid">${cardsHtml}</div>
+        </section>`;
+    }
+  }).join('');
+}
+
+/* ============ CART LOGIC ============ */
+function addToCart(id){
+  const products = getProducts();
+  const product = products.find(p=>p.id===id);
+  if(!product) return;
+  let cart = getCart();
+  const existing = cart.find(i=>i.id===id);
+  if(existing){ existing.qty += 1; }
+  else{ cart.push({id:product.id, name:product.name, price:product.price, img:product.img, qty:1}); }
+  saveCart(cart);
+  showToast(`تمت إضافة "${product.name}" للسلة 🌸`);
+  openCart();
+}
+
+function changeQty(id, delta){
+  let cart = getCart();
+  const item = cart.find(i=>i.id===id);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0){ cart = cart.filter(i=>i.id!==id); }
+  saveCart(cart);
+}
+
+function removeItem(id){
+  let cart = getCart().filter(i=>i.id!==id);
+  saveCart(cart);
+}
+
+function renderCart(){
+  const cart = getCart();
+  const cartItems = document.getElementById('cartItems');
+  const cartTotal = document.getElementById('cartTotal');
+  const cartCount = document.getElementById('cartCount');
+
+  const totalQty = cart.reduce((s,i)=>s+i.qty,0);
+  cartCount.textContent = totalQty;
+
+  if(cart.length === 0){
+    cartItems.innerHTML = `<div class="cart-empty">السلة فاضية، وقتها تضيفي حاجة حلوة 🌸</div>`;
+    cartTotal.textContent = "0 ج.م";
+    return;
+  }
+
+  cartItems.innerHTML = cart.map(i=>{
+    const imgHtml = i.img ? `<img src="${i.img}">` : `<div style="width:70px;height:70px;background:var(--cream-2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;">🌸</div>`;
+    return `
+    <div class="cart-item">
+      ${imgHtml}
+      <div class="cart-item-info">
+        <h5>${i.name}</h5>
+        <span class="price">${i.price} ج.م</span>
+        <div class="qty-row">
+          <button class="qty-btn" onclick="changeQty('${i.id}',-1)">−</button>
+          <span>${i.qty}</span>
+          <button class="qty-btn" onclick="changeQty('${i.id}',1)">+</button>
+        </div>
+      </div>
+      <button class="remove-x" onclick="removeItem('${i.id}')">×</button>
+    </div>`;
+  }).join('');
+
+  const total = cart.reduce((s,i)=>s+i.qty*i.price,0);
+  cartTotal.textContent = `${total} ج.م`;
+}
+
+function openCart(){
+  document.getElementById('cartDrawer').classList.add('active');
+  document.getElementById('overlay').classList.add('active');
+}
+function closeCart(){
+  document.getElementById('cartDrawer').classList.remove('active');
+  document.getElementById('overlay').classList.remove('active');
+}
+
+function checkoutWhatsapp(){
+  const cart = getCart();
+  if(cart.length===0){ showToast('السلة فاضية!'); return; }
+  const settings = getSettings();
+  let msg = "مرحباً داندي 🌸، عايزة أطلب:\n\n";
+  cart.forEach(i=>{
+    msg += `- ${i.name} × ${i.qty} = ${i.qty*i.price} ج.م\n`;
+  });
+  const total = cart.reduce((s,i)=>s+i.qty*i.price,0);
+  msg += `\nالإجمالي: ${total} ج.م`;
+  const url = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(msg)}`;
+  window.open(url,'_blank');
+}
+
+/* ============ SETTINGS (logo + whatsapp) ============ */
+function applySettings(){
+  const settings = getSettings();
+  const waFloat = document.getElementById('waFloat');
+  const waFooterLink = document.getElementById('waFooterLink');
+  const waFooterIconLink = document.getElementById('waFooterIconLink');
+  const waUrl = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent('مرحباً داندي 🌸، عندي استفسار')}`;
+  waFloat.href = waUrl;
+  waFooterLink.href = waUrl;
+  if(waFooterIconLink) waFooterIconLink.href = waUrl;
+
+  const logoImg = document.getElementById('siteLogo');
+  const logoFallback = document.getElementById('logoTextFallback');
+  if(settings.logo){
+    logoImg.src = settings.logo;
+    logoImg.style.display = 'block';
+    logoFallback.style.display = 'none';
+  }
+
+  const bannerBg = document.getElementById('midBannerBg');
+  const bannerOverlay = document.getElementById('midBannerOverlay');
+  if(settings.bannerImg){
+    bannerBg.style.backgroundImage = `url('${settings.bannerImg}')`;
+    bannerBg.classList.add('active');
+    bannerOverlay.style.display = 'block';
+  }
+  document.getElementById('midBannerTitle').textContent = settings.bannerTitle || 'جمالك، بلمستنا';
+  document.getElementById('midBannerDesc').textContent = settings.bannerDesc || '';
+  document.getElementById('midBannerBtn').textContent = settings.bannerBtnText || 'شوفي العروض الآن';
+}
+
+/* ============ MISC ============ */
+function toggleMobileNav(){
+  const nav = document.getElementById('mobileNav');
+  nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ============ INIT ============ */
+applySettings();
+renderProducts();
+renderDynamicSections();
+renderCart();
+</script>
+</body>
+</html>
